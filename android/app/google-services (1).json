@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496008105158",
+    "project_id": "voidvault-1a67e",
+    "storage_bucket": "voidvault-1a67e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496008105158:android:90156cbbc12272cc92dbc7",
+        "android_client_info": {
+          "package_name": "com.example.void_vault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgsFOsM4uuRqSIJ5lgm8_R9IHQPvZ-FtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
