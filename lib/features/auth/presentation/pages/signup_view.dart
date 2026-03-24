@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 
 class SignupView extends ConsumerWidget {
   const SignupView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final verifyPassController = TextEditingController();
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
@@ -37,21 +41,21 @@ class SignupView extends ConsumerWidget {
               const SizedBox(height: 48),
               
               // Email Field
-              _buildField('EMAIL'),
+              _buildField('EMAIL', emailController),
               const SizedBox(height: 16),
               
               // Password Field
-              _buildField('PASSWORD', obscure: true),
+              _buildField('PASSWORD',passwordController ,obscure: true),
               const SizedBox(height: 16),
               
               // Confirm Password Field
-              _buildField('CONFIRM PASSWORD', obscure: true),
+              _buildField('CONFIRM PASSWORD',verifyPassController ,obscure: true),
               const SizedBox(height: 32),
               
               // Signup Button
               ElevatedButton(
                 onPressed: () {
-                  // Signup logic
+                  ref.read(authConrollerProvider).signUp(emailController.text.trim(), passwordController.text.trim());
                 },
                 child: const Text('CREATE ACCOUNT'),
               ),
@@ -62,8 +66,9 @@ class SignupView extends ConsumerWidget {
     );
   }
 
-  Widget _buildField(String hint, {bool obscure = false}) {
+  Widget _buildField(String hint, TextEditingController controller ,{bool obscure = false}) {
     return TextField(
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,

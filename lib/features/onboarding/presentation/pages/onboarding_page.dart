@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:void_vault/features/auth/presentation/pages/login_view.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../controllers/onboarding_controller.dart';
 
 class OnboardingPage extends ConsumerWidget {
-  const OnboardingPage({super.key});
+  final VoidCallback? onCompleted;
+
+  const OnboardingPage({super.key, this.onCompleted});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,12 +66,8 @@ class OnboardingPage extends ConsumerWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                        // Navigation logic via Riverpod later
+                        // Call the completion callback
+                        onCompleted?.call();
                       },
                       child: const Text('ENTER THE VOID'),
                     ),

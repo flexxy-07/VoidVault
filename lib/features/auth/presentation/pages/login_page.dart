@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../controllers/auth_controller.dart';
+import '../../controllers/auth_controller.dart';
 import 'signup_view.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -10,6 +10,9 @@ class LoginPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: Center(
@@ -30,17 +33,17 @@ class LoginPage extends ConsumerWidget {
               const SizedBox(height: 48),
               
               // Email Field
-              _buildField('EMAIL'),
+              _buildField('EMAIL', emailController),
               const SizedBox(height: 16),
               
               // Password Field
-              _buildField('PASSWORD', obscure: true),
+              _buildField('PASSWORD',passwordController, obscure: true),
               const SizedBox(height: 32),
               
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  // Final navigation logic here
+                  ref.read(authConrollerProvider).logIn(emailController.text.trim(), passwordController.text.trim(),);
                 },
                 child: const Text('LOG IN'),
               ),
@@ -72,8 +75,9 @@ class LoginPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildField(String hint, {bool obscure = false}) {
+  Widget _buildField(String hint, TextEditingController controller ,{bool obscure = false}) {
     return TextField(
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
