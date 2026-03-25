@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:void_vault/features/gallery/model/cloudinary_account.dart';
 
 class GalleryRepo {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -12,7 +13,7 @@ class GalleryRepo {
   final String cloudName = 'dl5irrv3i';
   final String uploadPreset = 'VaultxVisuals';
 
-  Future<String> uploadToCloudinary(File file) async {
+  Future<String> uploadToCloudinary(File file, String cloudName, String uploadPreset) async {
     String url = "https://api.cloudinary.com/v1_1/$cloudName/image/upload";
 
     FormData formData = FormData.fromMap({
@@ -25,11 +26,12 @@ class GalleryRepo {
     return res.data['secure_url'];
   }
 
-  Future<void> saveImage(String imageUrl) async {
+  Future<void> saveImage(String imageUrl, String accountId) async {
     final user = _auth.currentUser;
     await _db.collection('images').add({
       'userId' : user!.uid,
       'imageUrl' : imageUrl,
+      'accountId' : accountId,
       'createdAt' :FieldValue.serverTimestamp(),
     });
 
@@ -45,4 +47,17 @@ class GalleryRepo {
         .snapshots();
   }
 
+  Stream<List<CloudinaryAccount>> getAccounts(){
+    return _db.collection('cloudinary_accounts').snapshots().map((snap){
+      return snap.docs.map((doc){
+        return CloudinaryAccount.fromMap(doc.id, doc.data());
+      }).toList();
+    });
+  }
+
+  Future<void> incrementStorage(String accountId) async {
+    await _db.collection('cloudinary_accounts').doc(accountId).update({
+      'usedStorage' : FieldValue.increment(1)
+    });
+  }
 }

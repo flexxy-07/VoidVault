@@ -4,7 +4,7 @@ import 'package:void_vault/features/auth/repo/auth_repo.dart';
 
 final authRepoProvider = Provider((ref) => AuthRepo());
 
-final authConrollerProvider = Provider((ref){
+final authControllerProvider = Provider((ref){
   return AuthController(ref);
 });
 

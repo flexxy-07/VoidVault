@@ -55,7 +55,7 @@ class SignupView extends ConsumerWidget {
               // Signup Button
               ElevatedButton(
                 onPressed: () {
-                  ref.read(authConrollerProvider).signUp(emailController.text.trim(), passwordController.text.trim());
+                  ref.read(authControllerProvider).signUp(emailController.text.trim(), passwordController.text.trim());
                 },
                 child: const Text('CREATE ACCOUNT'),
               ),

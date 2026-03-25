@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:void_vault/core/common/loader.dart';
 import 'package:void_vault/core/theme/app_theme.dart';
 import 'package:void_vault/features/auth/controllers/auth_controller.dart';
 import 'package:void_vault/features/gallery/controller/gallery_controller.dart';
@@ -13,6 +14,7 @@ class GalleryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imagesAsync = ref.watch(galleryStreamProvider);
+    final accountsAsync = ref.watch(accountStreamProvider);
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -25,7 +27,7 @@ class GalleryScreen extends ConsumerWidget {
             elevation: 0,
             centerTitle: false,
             title: Text(
-              "VOID_VAULT",
+              "VOID VAULT",
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: AppTheme.primary,
                 fontSize: 14,
@@ -36,7 +38,7 @@ class GalleryScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.logout, color: AppTheme.textSecondary, size: 20),
                 onPressed: () {
-                  ref.read(authConrollerProvider).logOut();
+                  ref.read(authControllerProvider).logOut();
                 },
               ),
               const SizedBox(width: 8),
@@ -74,8 +76,10 @@ class GalleryScreen extends ConsumerWidget {
                   crossAxisSpacing: 16,
                   itemBuilder: (context, index) {
                     final data = docs[index].data() as Map<String, dynamic>;
+                    print(data['accountId']); // Debug log 
                     return ImageCard(
                       imageUrl: data['imageUrl'] ?? '',
+                      
                       onTap: () {
                         // Image detail logic can be added later
                       },
@@ -86,9 +90,7 @@ class GalleryScreen extends ConsumerWidget {
               );
             },
             loading: () => const SliverFillRemaining(
-              child: Center(
-                child: CircularProgressIndicator(color: AppTheme.primary),
-              ),
+              child:  Loader(),
             ),
             error: (err, stack) => SliverFillRemaining(
               child: Center(

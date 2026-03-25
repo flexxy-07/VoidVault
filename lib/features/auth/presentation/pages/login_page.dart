@@ -43,7 +43,7 @@ class LoginPage extends ConsumerWidget {
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  ref.read(authConrollerProvider).logIn(emailController.text.trim(), passwordController.text.trim(),);
+                  ref.read(authControllerProvider).logIn(emailController.text.trim(), passwordController.text.trim(),);
                 },
                 child: const Text('LOG IN'),
               ),
