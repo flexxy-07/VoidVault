@@ -1,0 +1,11 @@
+﻿Analyzing void_vault...                                         
+
+   info - Import of a library in the 'lib/src' directory of another package - lib\core\auth_wrapper.dart:2:8 - implementation_imports
+   info - The import of 'package:flutter/src/widgets/framework.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' - lib\core\auth_wrapper.dart:2:8 - unnecessary_import
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\core\theme\app_theme.dart:25:9 - deprecated_member_use
+warning - Unused import: 'package:flutter/material.dart' - lib\features\gallery\controller\gallery_controller.dart:3:8 - unused_import
+   info - Unnecessary use of multiple underscores - lib\features\gallery\presentation\pages\gallery_screen.dart:53:24 - unnecessary_underscores
+   info - The imported package 'state_notifier' isn't a dependency of the importing package - lib\features\onboarding\controllers\onboarding_controller.dart:2:8 - depend_on_referenced_packages
+warning - Unused import: 'package:state_notifier/state_notifier.dart' - lib\features\onboarding\controllers\onboarding_controller.dart:2:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\onboarding\presentation\pages\onboarding_page.dart:28:46 - deprecated_member_use
+

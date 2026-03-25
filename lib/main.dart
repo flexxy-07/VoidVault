@@ -1,12 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:void_vault/core/firebase_config.dart';
 import 'package:void_vault/core/root_wrapper.dart';
 import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  
+  // Load environment variables from .env file
+  await dotenv.load(fileName: '.env');
+  
+  // Initialize Firebase with config from environment variables
+  await Firebase.initializeApp(
+    options: FirebaseConfig.currentPlatform,
+  );
 
   runApp(
     const ProviderScope(
