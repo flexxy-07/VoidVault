@@ -5,11 +5,8 @@ import 'package:void_vault/features/gallery/controller/gallery_controller.dart';
 
 class UploadSection extends ConsumerWidget {
   final int imageCount;
-
-  const UploadSection({
-    super.key,
-    required this.imageCount,
-  });
+  final VoidCallback? onUpload;
+  const UploadSection({super.key, required this.imageCount, this.onUpload});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,17 +36,15 @@ class UploadSection extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Text(
                       "$imageCount ITEMS",
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        fontSize: 32,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.displayLarge?.copyWith(fontSize: 32),
                     ),
                   ],
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  ref.read(galleryControllerProvider.notifier).pickAndUploadImage();
-                },
+                onTap: onUpload,
                 child: Container(
                   width: 56,
                   height: 56,

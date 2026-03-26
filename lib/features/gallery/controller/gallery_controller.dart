@@ -18,7 +18,7 @@ final galleryStreamProvider = StreamProvider((ref) {
   return ref.read(galleryRepoProvider).getImages();
 });
 
-final accountStreamProvider = StreamProvider<List<CloudinaryAccount>>((ref){
+final accountStreamProvider = StreamProvider<List<CloudinaryAccount>>((ref) {
   return ref.read(galleryRepoProvider).getAccounts();
 });
 
@@ -30,7 +30,7 @@ class GalleryController extends Notifier<AsyncValue<void>> {
     return const AsyncData(null); // initial state
   }
 
-  Future<void> pickAndUploadImage() async {
+  Future<void> pickAndUploadImage(List<CloudinaryAccount> accounts) async {
     try {
       state = const AsyncLoading();
 
@@ -42,64 +42,55 @@ class GalleryController extends Notifier<AsyncValue<void>> {
       }
 
       final imageFile = File(file.path);
-      
-      print('--- Debugging Upload ---');
-      final accountsAsync = ref.read(accountStreamProvider);
-      print('Accounts AsyncValue State: $accountsAsync');
-      
-      // Wait for the future to resolve in case it's still loading
-      final accounts = await ref.read(accountStreamProvider.future);
-      print('Fetched accounts: $accounts');
 
-      if(accounts == null || accounts.isEmpty){
-        print('Error: Accounts list is null or empty');
+      if (accounts.isEmpty) {
         state = AsyncError('No Accounts available', StackTrace.current);
         return;
       }
 
-      print('Accounts count before sort: ${accounts.length}');
       // sorting the accounts based on available storage
-      accounts.sort((a,b) => a.usedStorage.compareTo(b.usedStorage));
-      print('Sorted accounts successfully');
+      accounts.sort((a, b) => a.usedStorage.compareTo(b.usedStorage));
+      // print('Sorted accounts successfully');
 
       String? imgUrl;
       String? usedAccountId;
 
-      for(final account in accounts){
+      for (final account in accounts) {
         // Remove any accidental quotes that might have been saved in Firestore
         final cleanCloudName = account.cloudName.replaceAll('"', '').trim();
         final cleanPreset = account.uploadPreset.replaceAll('"', '').trim();
-        
-        print('Trying account: ${account.id}, CloudName: $cleanCloudName, Preset: $cleanPreset');
-        try{
-          final url = await ref.read(galleryRepoProvider).uploadToCloudinary(imageFile, cleanCloudName, cleanPreset);
+
+        // print('Trying account: ${account.id}, CloudName: $cleanCloudName, Preset: $cleanPreset');
+        try {
+          final url = await ref
+              .read(galleryRepoProvider)
+              .uploadToCloudinary(imageFile, cleanCloudName, cleanPreset);
 
           imgUrl = url;
           usedAccountId = account.id;
-          print('✅ Success! Uploaded to account ${account.id}. URL: $url');
+          // print('✅ Success! Uploaded to account ${account.id}. URL: $url');
           break;
-        }catch(e, stack){
+        } catch (e, stack) {
           if (e is DioException) {
-            print('❌ Failed on account ${account.id}: DioException [${e.response?.statusCode}]');
-            print('Cloudinary Response Body: ${e.response?.data}');
+            // print('❌ Failed on account ${account.id}: DioException [${e.response?.statusCode}]');
+            // print('Cloudinary Response Body: ${e.response?.data}');
           } else {
-            print('❌ Failed on account ${account.id}: $e');
-            print('Stack trace: $stack');
+            // print('❌ Failed on account ${account.id}: $e');
+            // print('Stack trace: $stack');
           }
           continue;
         }
       }
-      if(imgUrl == null) {
-        print('All uploads failed loop finished with null imgUrl');
+      if (imgUrl == null) {
+        // print('All uploads failed loop finished with null imgUrl');
         throw Exception('All uploads failed');
       }
 
-      
-    // saving img
+      // saving img
       await ref.read(galleryRepoProvider).saveImage(imgUrl, usedAccountId!);
-    
-    // update the storage
-    await ref.read(galleryRepoProvider).incrementStorage(usedAccountId);
+
+      // update the storage
+      await ref.read(galleryRepoProvider).incrementStorage(usedAccountId);
       state = const AsyncData(null);
     } catch (e, stackTrace) {
       state = AsyncError(e, stackTrace);

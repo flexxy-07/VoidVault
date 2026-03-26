@@ -5,6 +5,7 @@ import 'package:void_vault/core/common/loader.dart';
 import 'package:void_vault/core/theme/app_theme.dart';
 import 'package:void_vault/features/auth/controllers/auth_controller.dart';
 import 'package:void_vault/features/gallery/controller/gallery_controller.dart';
+import 'package:void_vault/features/gallery/presentation/pages/accounts_screen.dart';
 import 'package:void_vault/features/gallery/presentation/widgets/image_card.dart';
 import 'package:void_vault/features/gallery/presentation/widgets/upload_section.dart';
 
@@ -36,23 +37,48 @@ class GalleryScreen extends ConsumerWidget {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.logout, color: AppTheme.textSecondary, size: 20),
+                icon: const Icon(
+                  Icons.logout,
+                  color: AppTheme.textSecondary,
+                  size: 20,
+                ),
                 onPressed: () {
                   ref.read(authControllerProvider).logOut();
                 },
               ),
               const SizedBox(width: 8),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AccountsScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.storage),
+              ),
             ],
           ),
           imagesAsync.when(
             data: (snapshot) {
               final docs = snapshot.docs;
               return SliverToBoxAdapter(
-                child: UploadSection(imageCount: docs.length),
+                child: UploadSection(
+                  imageCount: docs.length,
+                  onUpload: accountsAsync.hasValue
+                      ? () {
+                          ref
+                              .read(galleryControllerProvider.notifier)
+                              .pickAndUploadImage(accountsAsync.value!);
+                        }
+                      : null,
+                ),
               );
             },
             loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-            error: (error, _) => const SliverToBoxAdapter(child: SizedBox.shrink()),
+            error: (error, _) =>
+                const SliverToBoxAdapter(child: SizedBox.shrink()),
           ),
           imagesAsync.when(
             data: (snapshot) {
@@ -69,32 +95,33 @@ class GalleryScreen extends ConsumerWidget {
               }
 
               return SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 sliver: SliverMasonryGrid.count(
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
                   itemBuilder: (context, index) {
                     final data = docs[index].data() as Map<String, dynamic>;
-                    print(data['accountId']); // Debug log 
+                    print(data['accountId']); // Debug log
                     return ImageCard(
                       imageUrl: data['imageUrl'] ?? '',
-                      
-                      onTap: () {
-                        // Image detail logic can be added later
-                      },
+                      metadata: data,
                     );
                   },
                   childCount: docs.length,
                 ),
               );
             },
-            loading: () => const SliverFillRemaining(
-              child:  Loader(),
-            ),
+            loading: () => const SliverFillRemaining(child: Loader()),
             error: (err, stack) => SliverFillRemaining(
               child: Center(
-                child: Text("ERROR: $err", style: const TextStyle(color: Colors.redAccent)),
+                child: Text(
+                  "ERROR: $err",
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
               ),
             ),
           ),
