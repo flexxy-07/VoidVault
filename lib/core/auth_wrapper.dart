@@ -13,7 +13,7 @@ class AuthWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
 
-    return authState.when(
+  return authState.when(
       data: (user) {
         if (user == null) {
           return const LoginPage();

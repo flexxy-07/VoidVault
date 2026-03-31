@@ -96,4 +96,31 @@ class GalleryController extends Notifier<AsyncValue<void>> {
       state = AsyncError(e, stackTrace);
     }
   }
+
+  Future<void> addAccount(
+    String cloudName,
+    String uploadPreset,
+    String label,
+  ) async {
+    try {
+      state = const AsyncLoading();
+      final account = CloudinaryAccount(id: '', cloudName: cloudName, uploadPreset: uploadPreset, label: label, usedStorage: 0);
+
+      await ref.read(galleryRepoProvider).addAccount(account);
+
+      state = const AsyncData(null);
+
+    } catch(e, stack){
+      state = AsyncError(e, stack);
+    }
+  }
+
+  Future<void> deleteAccount(String accountId) async {
+    try {
+      await ref.read(galleryRepoProvider).deleteAccount(accountId);
+    } catch (e, stack) {
+      state = AsyncError(e, stack);
+
+    }
+  }
 }

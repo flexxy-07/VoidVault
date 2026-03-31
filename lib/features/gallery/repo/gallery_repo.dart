@@ -60,4 +60,20 @@ class GalleryRepo {
       'usedStorage' : FieldValue.increment(1)
     });
   }
+
+  Future<void> addAccount(CloudinaryAccount account) async {
+    final user = _auth.currentUser;
+    await _db.collection('cloudinary_accounts').add({
+      'userId' : user!.uid,
+      'cloudName' : account.cloudName,
+      'uploadPreset' : account.uploadPreset,
+      'label' : account.label,
+      'usedStorage' : 0,
+
+    });
+  }
+
+  Future<void> deleteAccount(String accountId) async {
+    await _db.collection('cloudinary_accounts').doc(accountId).delete();
+  }
 }
