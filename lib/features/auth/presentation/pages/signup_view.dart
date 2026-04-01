@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/common/void_text_field.dart';
 import '../../controllers/auth_controller.dart';
 
 class SignupView extends ConsumerWidget {
@@ -31,62 +32,65 @@ class SignupView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'SIGNUP',
+                'INITIALIZE_ACCOUNT',
                 style: AppTheme.darkTheme.textTheme.displayLarge?.copyWith(
-                  fontSize: 32,
+                  fontSize: 28,
                   letterSpacing: -1.0,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'REGISTER NEW SYSTEM CREDENTIALS',
+                style: GoogleFonts.inter(
+                  color: AppTheme.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
               
               // Email Field
-              _buildField('EMAIL', emailController),
-              const SizedBox(height: 16),
+              VoidTextField(
+                label: 'EMAIL',
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 24),
               
               // Password Field
-              _buildField('PASSWORD',passwordController ,obscure: true),
-              const SizedBox(height: 16),
+              VoidTextField(
+                label: 'PASSWORD',
+                controller: passwordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 24),
               
               // Confirm Password Field
-              _buildField('CONFIRM PASSWORD',verifyPassController ,obscure: true),
-              const SizedBox(height: 32),
+              VoidTextField(
+                label: 'CONFIRM PASSWORD',
+                controller: verifyPassController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 48),
               
               // Signup Button
               ElevatedButton(
                 onPressed: () {
-                  ref.read(authControllerProvider).signUp(emailController.text.trim(), passwordController.text.trim());
+                  ref.read(authControllerProvider).signUp(
+                    emailController.text.trim(),
+                    passwordController.text.trim(),
+                  );
                 },
-                child: const Text('CREATE ACCOUNT'),
+                child: const Text('GENERATE ACCESS'),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildField(String hint, TextEditingController controller ,{bool obscure = false}) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.inter(
-          color: AppTheme.textSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 2.0,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.outlineVariant),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.primary),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      ),
-      style: GoogleFonts.inter(color: AppTheme.onBackground),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/common/void_text_field.dart';
 import '../../controllers/auth_controller.dart';
 import 'signup_view.dart';
 
@@ -23,32 +24,56 @@ class LoginPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'LOGIN',
+                'SYSTEM_LOGIN',
                 style: AppTheme.darkTheme.textTheme.displayLarge?.copyWith(
-                  fontSize: 32,
+                  fontSize: 28,
                   letterSpacing: -1.0,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 48),
-              
+              const SizedBox(height: 12),
+              Text(
+                'AUTHENTICATION REQUIRED TO ACCESS VAULT',
+                style: GoogleFonts.inter(
+                  color: AppTheme.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 64),
+
               // Email Field
-              _buildField('EMAIL', emailController),
-              const SizedBox(height: 16),
-              
-              // Password Field
-              _buildField('PASSWORD',passwordController, obscure: true),
+              VoidTextField(
+                label: 'EMAIL',
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
               const SizedBox(height: 32),
-              
+
+              // Password Field
+              VoidTextField(
+                label: 'PASSWORD',
+                controller: passwordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 48),
+
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  ref.read(authControllerProvider).logIn(emailController.text.trim(), passwordController.text.trim(),);
+                  ref
+                      .read(authControllerProvider)
+                      .logIn(
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                      );
                 },
-                child: const Text('LOG IN'),
+                child: const Text('LOGIN'),
               ),
-              const SizedBox(height: 24),
-              
+              const SizedBox(height: 32),
+
               // Signup Link
               GestureDetector(
                 onTap: () {
@@ -57,45 +82,31 @@ class LoginPage extends ConsumerWidget {
                     MaterialPageRoute(builder: (context) => const SignupView()),
                   );
                 },
-                child: Text(
-                  'CREATE ACCOUNT',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 1,
+                      width: 40,
+                      color: AppTheme.outlineVariant,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'CREATE NEW CREDENTIALS',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildField(String hint, TextEditingController controller ,{bool obscure = false}) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.inter(
-          color: AppTheme.textSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 2.0,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.outlineVariant),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: AppTheme.primary),
-        ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
-      ),
-      style: GoogleFonts.inter(color: AppTheme.onBackground),
     );
   }
 }

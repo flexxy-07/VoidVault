@@ -27,7 +27,7 @@ class FullscreenImageView extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Fullscreen Interactive Image with Hero
+          // Fullscreen 
           Positioned.fill(
             child: InteractiveViewer(
               minScale: 0.5,
