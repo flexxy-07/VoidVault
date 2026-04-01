@@ -9,10 +9,9 @@ import 'core/theme/app_theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Load environment variables from .env file
+  // Load environment
   await dotenv.load(fileName: '.env');
   
-  // Initialize Firebase with config from environment variables
   await Firebase.initializeApp(
     options: FirebaseConfig.currentPlatform,
   );
