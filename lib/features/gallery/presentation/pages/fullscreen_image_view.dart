@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:void_vault/core/theme/app_theme.dart';
@@ -33,18 +34,30 @@ class FullscreenImageView extends StatelessWidget {
               maxScale: 4.0,
               child: Hero(
                 tag: imageUrl,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.primary.withOpacity(0.5),
-                      ),
-                    );
-                  },
+                child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.cover,
+
+            placeholder: (context, url) => Container(
+              color: AppTheme.surface,
+              child: const Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                  ),
                 ),
+              ),
+            ),
+            errorWidget: (context, url, error) => Container(
+              color: AppTheme.surface,
+              child: const Center(
+                child: Icon(Icons.error, color: Colors.redAccent),
+              ),
+            ),
+          ),
               ),
             ),
           ),
