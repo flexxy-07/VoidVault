@@ -31,4 +31,3 @@ Upload → Try Account A → Fail → Try Account B → Success
 
 ---
 
-[Your Name]
